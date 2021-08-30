@@ -1,0 +1,23 @@
+.accordion{
+    font-style: italic;
+    background-color: #6f3320;
+    color: white;
+    padding: 20px 10px;
+    
+}
+
+body{
+    background-image: url("img/sfondobody.jpg");
+    align-items: center;
+}
+
+.cancella{
+    background-image: url("img/trash-alt-solid-24.png");
+    width: 20px;
+    height: 20px;
+}
+
+
+
+
+

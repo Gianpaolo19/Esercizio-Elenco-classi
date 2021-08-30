@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scuola</title>
+    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script></head>
+<body>
+    
+    <div class="container">
+        <div class="accordion accordion-flush" id="accordion">
+            <h1> Registro Classi</h1>
+
+            <script type="module"> //l'attributo module indica che tutto lo script viene trattato come un modulo. Esempio: json scritto in Scuola.js
+                import {Scuola} from "/Scuola.js";
+                import {Classe} from "/Classe.js";
+                import {Studente} from "/Studente.js";
+    
+                //esempi di operazioni di aggiunta e rimozione
+                let scuola = new Scuola(); 
+        
+                scuola.aggiungiClasse(new Classe(3, 3, 'B', []));
+                scuola.aggiungiStudente(3, new Studente("Mario", "Rossi")); 
+                scuola.aggiungiStudente(3, new Studente("Giovanni", "Stefanelli"));
+                scuola.aggiungiStudente(1, new Studente("Federico", "Montanari"));
+                scuola.aggiungiClasse(new Classe(4, 4, 'C', []));
+            
+                console.log(scuola);
+                scuola.rimuoviStudente(3, 4); //parametri: id della classe e id dello studente
+                scuola.rimuoviClasse(4);
+
+
+                 // Utilizzo l'ID per contrassegnare univocamente il button da utilizzare per aprire e chiudere lo specifico accordion
+                 var classi = scuola.getClassi();
+                 for(let i = 0; i < classi.length; i++){
+                    
+                    let intestazione = document.createElement('h2');
+                    intestazione.classList.add('headingOne');
+    
+                    let accordionButton = document.createElement('button');
+                    accordionButton.classList.add('accordion-button');
+                    accordionButton.setAttribute('type', "button");
+                    accordionButton.setAttribute('data-bs-toggle', "collapse");
+                    accordionButton.setAttribute('data-bs-target', "#collapse_"+classi[i]['id']);
+                    accordionButton.setAttribute('aria-expanded', true);
+                    accordionButton.setAttribute('aria-controls', "collapse_"+classi[i]['id']);
+                    accordionButton.innerText = classi[i]['classe'] + "° " + classi[i]['sezione'];
+    
+                    
+                    let container = document.createElement('div');
+                    container.classList.add('accordion-collapse');
+                    container.classList.add('collapse'); 
+                    container.setAttribute('id',"collapse_"+classi[i]['id']);
+                    container.setAttribute('aria-labelledby',"headingOne");                
+    
+                    let content = document.createElement('div');
+                     
+                   
+                    //ciclo che permette l'intestazione di ogni studente inserito
+                    let studenti = classi[i]['studenti'];
+                    if(studenti !== null && studenti !== undefined && studenti.length && studenti.length != 0){
+                            for(let j = 0; j < studenti.length; j++){
+                                let student = document.createElement('h6');
+                                student.setAttribute('id', studenti[j]['id'] + "_" + studenti[j]['nome'] + "_" + studenti[j]['cognome']);
+                                student.setAttribute('type','text');
+                                student.innerText += studenti[j]['nome'] + " " + studenti[j]['cognome'];
+                            
+
+                            let removeButton = document.createElement('button');
+                                removeButton.classList.add('cancella');
+                                removeButton.onclick = function(event) {
+                                    console.log(scuola);
+                                    document.getElementById(studenti[j]['id'] + "_" + studenti[j]['nome'] + "_" + studenti[j]['cognome']).remove();
+                                    scuola.rimuoviStudente(classi[i]['id'], studenti[j]['id']);
+                                    this.remove(); 
+                                }
+                                content.appendChild(student); 
+                                content.appendChild(removeButton); 
+                        }
+                    }else{
+                        let student = document.createElement('h6');
+                        student.innerHTML = "Non ci sono alunni in questa classe!";
+                        content.appendChild(student);
+                    }
+                    
+    
+                    //Il contenuto va nel container
+                    container.appendChild(content);
+    
+                    //Il bottone va nell'intestazione
+                    intestazione.appendChild(accordionButton);
+
+                    let accordion = document.getElementById('accordion');
+                    let accordionItem = document.createElement('div');
+                    accordionItem.classList.add('accordion-item');
+    
+                    //Nell'accordion imposto l'intestazione come primo figlio e il container come fratello successivo
+                    accordion.appendChild(intestazione);
+                    accordion.appendChild(container);
+    
+                    //Ogni accordion va in un div di classe "accordion-item"
+                    accordionItem.appendChild(accordion);
+
+                    //Unisco tutto al body
+                    document.body.appendChild(accordionItem);
+                   
+                }
+                
+            </script>
+        </div>
+    </div>
+    
+</body>
+</html>
